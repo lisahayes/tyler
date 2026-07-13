@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Leak Cost Calculator</title>
+    <meta name="robots" content="noindex">
+<link rel="canonical" href="https://tylerleakrepairpros.com/embed/leak-cost-calculator">
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Bitter',Georgia,serif;font-size:16px;color:#23291f;background:transparent;padding:16px;}
+:root{--pine:#166534;--pine-d:#0f4a26;--brick:#7F1D1D;--brick-d:#5c1414;--ink:#16231a;--paper:#f6f4ee;--line:#dad3c6;}
+select,input[type=number]{width:100%;padding:9px 11px;border:1.5px solid #c4bfb5;border-radius:6px;font-size:15px;font-family:inherit;color:#23291f;background:#faf9f6;margin-top:4px;}
+label{display:block;font-family:'Archivo',system-ui,sans-serif;font-size:13px;font-weight:700;color:#23291f;margin:14px 0 2px;}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.presets{display:flex;gap:7px;flex-wrap:wrap;margin-top:7px;}
+.preset{background:var(--pine);color:#fff;border:none;padding:5px 13px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;}
+.calc-btn{background:var(--brick);color:#fff;border:none;padding:12px 28px;border-radius:6px;font-weight:800;font-size:15px;cursor:pointer;margin-top:16px;width:100%;}
+.result{display:none;background:#f0f7f2;border:2px solid var(--pine);border-radius:8px;padding:18px;margin-top:16px;}
+.result.show{display:block;}
+.big{font-family:'Archivo',system-ui,sans-serif;font-size:28px;font-weight:800;color:var(--pine-d);}
+.cost{font-family:'Archivo',system-ui,sans-serif;font-size:18px;font-weight:800;color:var(--brick);margin:8px 0 2px;}
+.note{font-size:12.5px;color:#3a5a44;background:rgba(22,101,52,.08);border-left:3px solid var(--pine);padding:7px 10px;border-radius:0 5px 5px 0;margin:10px 0;}
+.cta{display:block;background:var(--brick);color:#fff;text-align:center;padding:12px;border-radius:6px;font-weight:800;text-decoration:none;margin-top:12px;}
+.powered{text-align:center;font-size:12px;color:#6b7280;margin-top:14px;}
+.powered a{color:var(--pine-d);}
+</style>
+
+</head>
+<body>
+<label for="etype">Leak type</label>
+<select id="etype" onchange="eUpd()">
+  <option value="drip">Dripping faucet (drips/min)</option>
+  <option value="toilet">Running toilet</option>
+  <option value="trickle">Steady stream (gal/hr)</option>
+  <option value="sprinkler">Irrigation leak (gal/hr)</option>
+</select>
+<div id="edrip"><label>Drips per minute <input type="number" id="edpm" value="60" min="1" max="600"></label>
+<div class="presets"><button class="preset" onclick="document.getElementById('edpm').value=10">Slow 10</button><button class="preset" onclick="document.getElementById('edpm').value=60">Steady 60</button><button class="preset" onclick="document.getElementById('edpm').value=120">Fast 120</button></div></div>
+<div id="etoilet" style="display:none"><label>Gallons per day <input type="number" id="etgpd" value="480" min="1" max="2000"></label></div>
+<div id="egph" style="display:none"><label>Gallons per hour <input type="number" id="egphv" value="5" min="0.1" max="1000" step="0.1"></label></div>
+<label>Number of fixtures <input type="number" id="ecnt" value="1" min="1" max="20"></label>
+<button class="calc-btn" onclick="eCalc()">Calculate cost</button>
+<div class="result" id="eres"></div>
+<div class="powered">Powered by <a href="https://tylerleakrepairpros.com" target="_blank" rel="dofollow">Tyler Leak Repair Experts</a></div>
+<script>
+function eUpd(){var t=document.getElementById('etype').value;document.getElementById('edrip').style.display=t==='drip'?'':'none';document.getElementById('etoilet').style.display=t==='toilet'?'':'none';document.getElementById('egph').style.display=(t==='trickle'||t==='sprinkler')?'':'none';}
+function eCalc(){
+  var t=document.getElementById('etype').value,cnt=parseFloat(document.getElementById('ecnt').value)||1,gpd=0;
+  if(t==='drip'){gpd=(parseFloat(document.getElementById('edpm').value)||0)*60*24/15140;}
+  else if(t==='toilet'){gpd=parseFloat(document.getElementById('etgpd').value)||480;}
+  else{gpd=(parseFloat(document.getElementById('egphv').value)||0)*24;}
+  gpd*=cnt;
+  var gpm=gpd*30.44,gpy=gpd*365,wc=(gpm/1000)*3.75,sc=(gpm/1000)*4.10,cc=wc+sc,ccy=(gpy/1000)*7.85;
+  var el=document.getElementById('eres');
+  el.innerHTML='<div class="big">'+Math.round(gpd).toLocaleString()+' gal/day</div><div style="font-size:14px;color:#555;margin:3px 0 10px">'+Math.round(gpm).toLocaleString()+' gal/month &middot; '+Math.round(gpy).toLocaleString()+' gal/year</div><div class="cost">~$'+cc.toFixed(2)+'/month</div><div style="font-size:13px;color:#555;margin-bottom:8px">$'+wc.toFixed(2)+' water + $'+sc.toFixed(2)+' sewer &middot; ~$'+ccy.toFixed(0)+'/year</div><div class="note">Tyler bills sewer on actual use, so leaks raise both charges.</div><a class="cta" href="tel:+19036515125">Call (903) 651-5125</a>';
+  el.className='result show';
+}
+</script>
+</body></html>
